@@ -13,7 +13,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 SOURCE = Path(sys.argv[1])
 OUT = Path(__file__).resolve().parents[1] / 'assets/work'
-W, H, SCALE = 900, 760, 2
+W, H, SCALE = 900, 875, 2
 BG, INK, MUTED = '#f8f7f3', '#292d29', '#62685f'
 COLORS = {'National': '#bd493c', 'Local': '#237f87'}
 VIOLENT = {'Battles', 'Explosions/Remote violence', 'Violence against civilians'}
@@ -39,11 +39,11 @@ xs = [p[0] for ring in rings for p in ring]
 ys = [p[1] for ring in rings for p in ring]
 # Equirectangular view corrected for longitude distance at South Sudan's mid-latitude.
 coslat = math.cos(math.radians((min(ys)+max(ys))/2))
-scale = min(800/((max(xs)-min(xs))*coslat), 465/(max(ys)-min(ys)))
+scale = min(860/((max(xs)-min(xs))*coslat), 640/(max(ys)-min(ys)))
 center_x, center_y = (min(xs)+max(xs))/2, (min(ys)+max(ys))/2
 
 def point(x,y):
-    return ((450+(x-center_x)*coslat*scale)*SCALE, (365-(y-center_y)*scale)*SCALE)
+    return ((450+(x-center_x)*coslat*scale)*SCALE, (400-(y-center_y)*scale)*SCALE)
 
 def font(size, bold=False):
     path = Path('/System/Library/Fonts/Supplemental') / ('Arial Bold.ttf' if bold else 'Arial.ttf')
@@ -77,18 +77,18 @@ for year in range(2021,2026):
             od.ellipse((x-r,y-r,x+r,y+r),fill=(*rgb,175),outline=(*rgb,255),width=2)
         im=Image.alpha_composite(im.convert('RGBA'),overlay).convert('RGB'); d=ImageDraw.Draw(im)
         for label,x in [('National',36),('Local',190)]:
-            d.ellipse(((x)*SCALE,624*SCALE,(x+14)*SCALE,638*SCALE),fill=COLORS[label])
-            text(d,(x+23,619),label,20)
-        text(d,(350,619),'Fatalities',18,fill=MUTED)
+            d.ellipse(((x)*SCALE,754*SCALE,(x+14)*SCALE,768*SCALE),fill=COLORS[label])
+            text(d,(x+23,749),label,20)
+        text(d,(350,749),'Fatalities',18,fill=MUTED)
         for val,x in [(1,465),(10,560),(100,685)]:
-            r=radius(val); cy=632
+            r=radius(val); cy=762
             d.ellipse(((x-r)*SCALE,(cy-r)*SCALE,(x+r)*SCALE,(cy+r)*SCALE),outline=MUTED,width=2)
-            text(d,(x+r+9,621),str(val),18,fill=MUTED)
-        text(d,(30,677),'Source: ACLED · National/local classification from project analysis',17,fill=MUTED)
-        text(d,(30,704),'Dot area scales with reported fatalities; 0–1 use a minimum visible size.',17,fill=MUTED)
-        d.rectangle((30*SCALE,744*SCALE,870*SCALE,748*SCALE),fill='#dcded5')
+            text(d,(x+r+9,751),str(val),18,fill=MUTED)
+        text(d,(30,805),'Source: ACLED · National/local classification from project analysis',17,fill=MUTED)
+        text(d,(30,832),'Dot area scales with reported fatalities; 0–1 use a minimum visible size.',17,fill=MUTED)
+        d.rectangle((30*SCALE,860*SCALE,870*SCALE,864*SCALE),fill='#dcded5')
         i=len(frames)
-        d.rectangle((30*SCALE,744*SCALE,(30+840*(i+1)/60)*SCALE,748*SCALE),fill='#416347')
+        d.rectangle((30*SCALE,860*SCALE,(30+840*(i+1)/60)*SCALE,864*SCALE),fill='#416347')
         frames.append(im.resize((W,H),Image.Resampling.LANCZOS))
 frames[0].save(OUT/'south-sudan-conflict-events-poster.png')
 # Shared palette prevents flickering across frames.
